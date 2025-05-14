@@ -1,0 +1,36 @@
+## Minecraft Skin PNG via API ##
+## by PixelForge Studios ##
+## This script was programmed by Samy ##
+## For questions - Discord: _samy123 ##
+
+import requests
+
+# Minecraft Username
+username = "minecraft_username"
+
+# Get Player UUID via API call
+def get_uuid(username):
+    url = f"https://api.mojang.com/users/profiles/minecraft/{username}"
+    response = requests.get(url)
+    if response.status_code == 200:
+        return response.json()["id"]
+    else:
+        raise Exception(f"UUID for {username} wasn't found")
+
+# Get Player Skin via API and safe as PNG
+def download_skin(uuid, filename="skin.png"):
+    url = f"https://crafatar.com/skins/{uuid}"
+    response = requests.get(url)
+    if response.status_code == 200:
+        with open(filename, "wb") as f:
+            f.write(response.content)
+        print(f"Skin saved as: {filename}")
+    else:
+        raise Exception("Error while trying to download skin")
+
+# Execute
+try:
+    uuid = get_uuid(username)
+    download_skin(uuid, f"{username}_skin.png")
+except Exception as e:
+    print(f"Fehler: {e}")
